@@ -1,0 +1,46 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <parent>
+        <artifactId>common-pc</artifactId>
+        <groupId>com.multi.cn</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>common-web</artifactId>
+    <packaging>war</packaging>
+    <name>common-web</name>
+    <url>http://maven.apache.org</url>
+
+    <!--添加start-->
+    <dependencies>
+
+        <!--添加对model的依赖-->
+        <dependency>
+            <groupId>com.multi.cn</groupId>
+            <artifactId>common-model</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--添加对Service的依赖-->
+        <dependency>
+            <groupId>com.multi.cn</groupId>
+            <artifactId>common-service</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <!--添加对dao的依赖-->
+        <dependency>
+            <groupId>com.multi.cn</groupId>
+            <artifactId>common-dao</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>RELEASE</version>
+        </dependency>
+    </dependencies>
+    <!--添加end-->
+
+    <build>
+        <finalName>common-web</finalName>
+    </build>
+</project>

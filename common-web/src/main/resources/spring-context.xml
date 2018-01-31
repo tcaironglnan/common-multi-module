@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+            http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-4.0.xsd
+           http://www.springframework.org/schema/aop
+           http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+
+    <!--引入properties配置文件-->
+    <context:property-placeholder location="classpath:jdbc.properties"/>
+    <!--配置报扫描-->
+    <context:component-scan base-package="com.taobao.service"/>
+
+    <!--配置数据源-->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <!--这里如果写成${jdbc.driver}，就会出现加载jdbc驱动失败的问题，暂时不清楚什么原因-->
+        <property name="driverClassName" value="${jdbc.driveClassName}"/>
+        <property name="url" value="${jdbc.url}"/>
+        <property name="username" value="${jdbc.userName}"/>
+        <property name="password" value="${jdbc.passWord}"/>
+
+        <!--连接池最大使用连接数-->
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <!--初始化链接大小-->
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <!--获取链接最大等待时间-->
+        <property name="maxWait" value="${jdbc.maxWait}"/>
+        <!--连接池最大空闲-->
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.maxSize}"/>
+        <!--连接池最小空闲-->
+        <property name="minIdle" value="${jdbc.minIdle}"/>
+        <!--自动清除无用时间-->
+        <property name="removeAbandoned" value="${jdbc.removeAbandoned}"/>
+        <!--清除无用链接的等待时间-->
+        <property name="removeAbandonedTimeout" value="${jdbc.removeAbandonedTimeout}"/>
+        <!--链接属性-->
+        <property name="connectionProperties" value="clientEncoding=UTF-8"/>
+    </bean>
+
+    <!--mybatis的配置文件-->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="configLocation" value="classpath:mybatis-config.xml"/>
+        <property name="mapperLocations" value="classpath*:mapper/*Mapper.xml"/>
+    </bean>
+    <!--spring和mybatis整合配置，扫描所有的dao和所有的mapper.xml-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.taobao.dao"/>
+        <property name="sqlSessionFactoryBeanName" value="sqlSessionFactory"/>
+    </bean>
+    <!--配置事务管理-->
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--开启注解事务-->
+    <!--<tx:annotation-driven/>-->
+    <!--开启事务配置-->
+    <tx:advice id="txAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <!--写操作-->
+            <tx:method name="inset*" propagation="REQUIRED" isolation="DEFAULT"/>
+            <tx:method name="update*" propagation="REQUIRED" isolation="DEFAULT"/>
+            <tx:method name="delete*" propagation="REQUIRED" isolation="DEFAULT"/>
+            <tx:method name="batch*" propagation="REQUIRED" isolation="DEFAULT"/>
+            <!--读操作-->
+            <tx:method name="load*" propagation="REQUIRED" isolation="DEFAULT" read-only="true"/>
+            <tx:method name="get*" propagation="REQUIRED" isolation="DEFAULT" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRED" isolation="DEFAULT" read-only="true"/>
+        </tx:attributes>
+    </tx:advice> 
+    
+    <!--配置aop-->
+    <aop:config>
+        <aop:pointcut id="txAop" expression="execution(* com.taobao.service.*.*(..))"/>
+        <aop:advisor advice-ref="txAdvice" pointcut-ref="txAop"/>
+    </aop:config>
+</beans>
