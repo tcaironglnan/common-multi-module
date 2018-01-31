@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.multi.cn</groupId>
-    <artifactId>common-pc</artifactId>
+    <artifactId>common-multi-module</artifactId>
     <packaging>pom</packaging>
     <version>1.0-SNAPSHOT</version>
 
@@ -312,6 +312,7 @@
     </dependencies>
 
     <build>
+        <finalName>common-multi-module</finalName>
         <plugins>
             <!-- 资源文件拷贝插件 -->
             <plugin>
